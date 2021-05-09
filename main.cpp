@@ -283,7 +283,36 @@ void wczytajZnajomychZPliku(vector <Osoba> &adresaci) {
     }
 }
 
-void WczytajTylkoKontaktyDanegoUzytkownika(vector<Osoba> *adresaci){
+void WczytajTylkoKontaktyDanegoUzytkownika(vector<Osoba> &adresaci, int zalogowaneId){
+
+    vector<Uzytkownik> BazaDanych;
+    string liniaZDanymiZnajomego = "";
+
+    cout << "Zalogowane ID to: " << zalogowaneId << endl;
+
+    fstream plik;
+    plik.open("KontaktyTymczasowe.txt", ios::out );
+    if(plik.good() == true){
+            for (vector <Osoba>::iterator itr=adresaci.begin(); itr != adresaci.end(); itr++) {
+                if(itr->AktualnieZalogowaneId == zalogowaneId){
+            liniaZDanymiZnajomego += ZamianaIntNaString(itr -> id) + '|';
+            liniaZDanymiZnajomego +=ZamianaIntNaString(itr->AktualnieZalogowaneId) + '|';
+            liniaZDanymiZnajomego += itr -> imie + '|';
+            liniaZDanymiZnajomego += itr -> nazwisko + '|';
+            liniaZDanymiZnajomego += itr -> numerTelefonu + '|';
+            liniaZDanymiZnajomego += itr -> email + '|';
+            liniaZDanymiZnajomego += itr -> adres + '|';
+
+            plik << liniaZDanymiZnajomego << endl;
+            liniaZDanymiZnajomego = "";
+        }
+            }
+            plik.close();
+        cout << "Dane zostaly zapisne." << endl;
+        system("pause");
+    }else{
+    cout << "Nie udalo sie utworzyc pliku " << endl;
+    }
 
 
 
@@ -521,7 +550,7 @@ int main() {
         } else if (wybor == '3') {
             WyszukajPoNazwisku(adresaci);
         } else if (wybor == '4') {
-            WyswietlWszystkieOsoby(adresaci);
+            WczytajTylkoKontaktyDanegoUzytkownika(adresaci,AktualnieZalogowaneId);
         } else if (wybor == '5') {
             UsunUzytkownika(adresaci);
             ZapisZmianyWKsiazceAdresowej(adresaci);
