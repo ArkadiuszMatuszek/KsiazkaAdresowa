@@ -133,38 +133,46 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
     string login, haslo;
     int idZalogowanegoUzytkownika = 0;
     bool ZnalezionyUzytkownik = 0;
+    int iloscProb = 3;
 
 
 
 
-    cout << "Podaj login uzytkownika " << endl;
-    cin >> login;
-    for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
+        cout << "Podaj login uzytkownika " << endl;
 
-        if(itr->login == login) {
-            ZnalezionyUzytkownik = 1;
-            cout << "Podaj haslo uzytkownika " << endl;
-            cin >> haslo;
-            if(itr->haslo == haslo) {
-                cout << "Pomyslnie zalogowano uzytkownika " << endl;
-                cout << itr->login << endl;
-                cout << itr->haslo << endl;
-                cout << itr->IdZalogowanegoUzytkownika << endl;
-                idZalogowanegoUzytkownika = itr->IdZalogowanegoUzytkownika;
-                break;
-            } else {
-                cout << "Nie prawidłowe haslo " << endl;
-                cout << "Trwa zamykanie programu " << endl;
-                Sleep(500);
-                exit(0);
+        cin >> login;
+
+        for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
+            if(itr->login == login) {
+                ZnalezionyUzytkownik = 1;
+                for(int i=iloscProb; i>0; i--){
+                        cout << "To jest twoje " << iloscProb-i+1 << " wpisanie hasla " << endl;
+                cout << "Podaj haslo uzytkownika " << endl;
+                cin >> haslo;
+                if(itr->haslo == haslo) {
+                    cout << "Pomyslnie zalogowano uzytkownika " << endl;
+                    cout << itr->login << endl;
+                    cout << itr->haslo << endl;
+                    cout << itr->IdZalogowanegoUzytkownika << endl;
+                    idZalogowanegoUzytkownika = itr->IdZalogowanegoUzytkownika;
+                    break;
+
+                }
+                }
+
+                }
             }
+
+
+    if(!ZnalezionyUzytkownik || iloscProb == 3) {
+        system("cls");
+        for(int i=3; i>0; i--) {
+            cout << "Nie znaleziono uzytkownika " << endl;
+            cout << "Program zostanie zamkniety za " << i << endl;
+            Sleep(1000);
+            system("cls");
         }
-
-    }
-    if(!ZnalezionyUzytkownik) {
-        cout << "Nie znaleziono uzytkownika " << endl;
-        LogowanieUzytkownika(BazaDanych);
-
+        exit(0);
     }
 
 
@@ -174,19 +182,19 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
 
 }
 
-void zmianaHasloUzytkownika(vector<Uzytkownik> &BazaDanych, int AktualneId){
+void zmianaHasloUzytkownika(vector<Uzytkownik> &BazaDanych, int AktualneId) {
 
     string NoweHaslo;
 
-cout << "Jestes w panelu zmiany haslo uzytkownika " << endl;
-cout << "Podaj aktualne haslo " << endl;
+    cout << "Jestes w panelu zmiany haslo uzytkownika " << endl;
+    cout << "Podaj aktualne haslo " << endl;
 
 
-for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
-        if(AktualneId == itr->IdZalogowanegoUzytkownika){
-        cin >> NoweHaslo;
-        itr->haslo = NoweHaslo;
-        break;
+    for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
+        if(AktualneId == itr->IdZalogowanegoUzytkownika) {
+            cin >> NoweHaslo;
+            itr->haslo = NoweHaslo;
+            break;
         }
     }
 
@@ -393,10 +401,10 @@ void wczytajZnajomychZPliku(vector <Osoba> &adresaci, int idZalogowanegoUzytkown
                     wyraz = linia.substr (poczatek, ileZnakowWyjac);
                     idUzytkownikaZPliku = atoi(wyraz.c_str());
                     //if ( iloscPionowychKresek == 2 && idZalogowanegoUzytkownika == idUzytkownikaZPliku) {
-                        iloscZnajomych++;
-                        zapiszZnajomychUzytkownikaDoWektora(adresaci, linia, iloscZnajomych);
-                        break;
-                   // }
+                    iloscZnajomych++;
+                    zapiszZnajomychUzytkownikaDoWektora(adresaci, linia, iloscZnajomych);
+                    break;
+                    // }
                     poczatek = poczatek + ileZnakowWyjac + 1;
                 }
             }
@@ -433,7 +441,7 @@ void wczytajZanjomychZgodniezZalogowanymId(vector <Osoba> &adresaci, int idZalog
                         iloscZnajomych++;
                         zapiszZnajomychUzytkownikaDoWektora(adresaci, linia, iloscZnajomych);
                         break;
-                   }
+                    }
                     poczatek = poczatek + ileZnakowWyjac + 1;
                 }
             }
@@ -633,13 +641,13 @@ void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci, int AktualnieZalogowa
     }
 }
 
-void ZapiszZmianeHaslaWBazieDanych(vector<Uzytkownik> &BazaDanych){
-fstream plik;
-string liniaZDanymiUzytkownika = "";
+void ZapiszZmianeHaslaWBazieDanych(vector<Uzytkownik> &BazaDanych) {
+    fstream plik;
+    string liniaZDanymiUzytkownika = "";
 
-plik.open("BazaUzytkownikow.txt", ios::out);
-if(plik.good() == true){
-            for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++){
+    plik.open("BazaUzytkownikow.txt", ios::out);
+    if(plik.good() == true) {
+        for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
 
             liniaZDanymiUzytkownika += ZamianaIntNaString(itr->IdZalogowanegoUzytkownika) + '|';
             liniaZDanymiUzytkownika += itr->login + '|';
@@ -647,9 +655,9 @@ if(plik.good() == true){
 
             plik << liniaZDanymiUzytkownika << endl;
             liniaZDanymiUzytkownika = "";
+        }
     }
-}
-plik.close();
+    plik.close();
 }
 
 void MenuGlowne(int AktualnieZalogowaneId) {
@@ -659,49 +667,7 @@ void MenuGlowne(int AktualnieZalogowaneId) {
     char wybor;
 
 
-wczytajZanjomychZgodniezZalogowanymId(adresaci,AktualnieZalogowaneId);
 
-    while(true) {
-        system("cls");
-        cout << "1. Dodaj osobe" << endl;
-        cout << "2. Wyszukaj po imieniu" << endl;
-        cout << "3. Wyszukaj po nazwisku" << endl;
-        cout << "4. Wyswietl wszystkie osoby" << endl;
-        cout << "5. Usun adresata" << endl;
-        cout << "6. Edytuj adresata" << endl;
-        cout << "7. Zmien haslo " << endl;
-        cout << "8. Wyloguj sie " << endl;
-        cout << "9. Zakoncz program" << endl;
-
-        wybor = wczytajZnak();
-
-        if (wybor == '1') {
-wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
-            zapiszNowegoZnajomego(adresaci, AktualnieZalogowaneId);
-        } else if (wybor == '2') {
-            WyszukajPoImieniu(adresaci);
-        } else if (wybor == '3') {
-            WyszukajPoNazwisku(adresaci);
-        } else if (wybor == '4') {
-            WyswietlWszystkieOsoby(adresaci);
-        } else if (wybor == '5') {
-            UsunUzytkownika(adresaci);
-            ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
-        } else if (wybor == '6') {
-            EdytujIstniejacyKontakt(adresaci);
-            ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
-        } else if(wybor == '7') {
-            WczytajBazeUzytkownikow(BazaDanych);
-            zmianaHasloUzytkownika(BazaDanych,AktualnieZalogowaneId);
-            ZapiszZmianeHaslaWBazieDanych(BazaDanych);
-
-        } else if(wybor == '8') {
-
-        } else if (wybor == '9') {
-            exit(0);
-        }
-
-    }
 }
 
 
@@ -730,7 +696,54 @@ int main() {
 
         if (wybor == '1') {
             AktualnieZalogowaneId = LogowanieUzytkownika(BazaDanych);
-            MenuGlowne(AktualnieZalogowaneId);
+            wczytajZanjomychZgodniezZalogowanymId(adresaci,AktualnieZalogowaneId);
+
+
+
+            while(true) {
+                system("cls");
+                cout << "1. Dodaj osobe" << endl;
+                cout << "2. Wyszukaj po imieniu" << endl;
+                cout << "3. Wyszukaj po nazwisku" << endl;
+                cout << "4. Wyswietl wszystkie osoby" << endl;
+                cout << "5. Usun adresata" << endl;
+                cout << "6. Edytuj adresata" << endl;
+                cout << "7. Zmien haslo " << endl;
+                cout << "8. Wyloguj sie " << endl;
+                cout << "9. Zakoncz program" << endl;
+                cout << "Numer aktualnie zalogowane uzytkownika to: " << AktualnieZalogowaneId << endl;
+
+                wybor = wczytajZnak();
+
+                if (wybor == '1') {
+                    wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
+                    zapiszNowegoZnajomego(adresaci, AktualnieZalogowaneId);
+                } else if (wybor == '2') {
+                    WyszukajPoImieniu(adresaci);
+                } else if (wybor == '3') {
+                    WyszukajPoNazwisku(adresaci);
+                } else if (wybor == '4') {
+                    WyswietlWszystkieOsoby(adresaci);
+                } else if (wybor == '5') {
+                    UsunUzytkownika(adresaci);
+                    ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
+                } else if (wybor == '6') {
+                    EdytujIstniejacyKontakt(adresaci);
+                    ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
+                } else if(wybor == '7') {
+                    WczytajBazeUzytkownikow(BazaDanych);
+                    zmianaHasloUzytkownika(BazaDanych,AktualnieZalogowaneId);
+                    ZapiszZmianeHaslaWBazieDanych(BazaDanych);
+
+                } else if(wybor == '8') {
+                    system("cls");
+                    main();
+
+                } else if (wybor == '9') {
+                    exit(0);
+                }
+
+            }
 
         } else if (wybor == '2') {
             zapisNowegoUzytkownika(BazaDanych);
