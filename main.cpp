@@ -145,8 +145,6 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
         for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
             if(itr->login == login) {
                 ZnalezionyUzytkownik = 1;
-                for(int i=iloscProb; i>0; i--){
-                        cout << "To jest twoje " << iloscProb-i+1 << " wpisanie hasla " << endl;
                 cout << "Podaj haslo uzytkownika " << endl;
                 cin >> haslo;
                 if(itr->haslo == haslo) {
@@ -156,18 +154,19 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
                     cout << itr->IdZalogowanegoUzytkownika << endl;
                     idZalogowanegoUzytkownika = itr->IdZalogowanegoUzytkownika;
                     break;
+                }else{
+                    cout << "Haslo nieprawidlowe, trwa zamykanie programu " << endl;
+                exit(0);
+                }
 
-                }
-                }
 
                 }
             }
 
-
     if(!ZnalezionyUzytkownik) {
         system("cls");
         for(int i=3; i>0; i--) {
-            cout << "Nie znaleziono uzytkownika " << endl;
+            cout << "Nie znaleziono uzytkownika lub haslo nieprawidlowe " << endl;
             cout << "Program zostanie zamkniety za " << i << endl;
             Sleep(1000);
             system("cls");
