@@ -164,7 +164,7 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
             }
 
 
-    if(!ZnalezionyUzytkownik || iloscProb == 3) {
+    if(!ZnalezionyUzytkownik) {
         system("cls");
         for(int i=3; i>0; i--) {
             cout << "Nie znaleziono uzytkownika " << endl;
