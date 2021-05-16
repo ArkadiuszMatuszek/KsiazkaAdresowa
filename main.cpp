@@ -247,98 +247,101 @@ void zapiszNowegoZnajomego(vector <Osoba> &adresaci, int ZalogowaneId) {
     }
 }
 
-void wczytajZnajomychZPliku(vector <Osoba> &adresaci) {
+void zapiszZnajomychUzytkownikaDoWektora (vector <Osoba> &adresaci, string linia, int iloscZnajomych)
+{
+    string wyraz;
+    int iloscPionowychKresek = 0;
+    int ileZnakowWyjac = 0;
+    int poczatek = 0 ;
+    Osoba pusty;
+
+    adresaci.push_back(pusty);
+
+    ileZnakowWyjac = 0;
+    poczatek = 0;
+    iloscPionowychKresek = 0;
+
+    for (int i = 0; i < linia.size(); i++)
+    {
+        ileZnakowWyjac = i - poczatek;
+        if (linia[i] == '|')
+        {
+            iloscPionowychKresek++;
+            wyraz = linia.substr (poczatek,ileZnakowWyjac);
+            switch (iloscPionowychKresek)
+            {
+            case 1:
+                adresaci[iloscZnajomych - 1].id = atoi(wyraz.c_str());
+                break;
+            case 2:
+                adresaci[iloscZnajomych - 1].AktualnieZalogowaneId = atoi(wyraz.c_str());
+                break;
+            case 3:
+                adresaci[iloscZnajomych - 1].imie = wyraz;
+                break;
+            case 4:
+                adresaci[iloscZnajomych - 1].nazwisko = wyraz;
+                break;
+            case 5:
+                adresaci[iloscZnajomych - 1].numerTelefonu = wyraz;
+                break;
+            case 6:
+                adresaci[iloscZnajomych - 1].email = wyraz;
+                break;
+            case 7:
+                adresaci[iloscZnajomych - 1].adres = wyraz;
+                break;
+            }
+            poczatek = poczatek + ileZnakowWyjac + 1;
+        }
+    }
+}
+
+
+void wczytajZnajomychZPliku(vector <Osoba> &adresaci, int idZalogowanegoUzytkownika)
+{
+
     string linia;
     string wyraz;
     int iloscPionowychKresek = 0;
     int ileZnakowWyjac = 0;
     int poczatek = 0 ;
+    int idUzytkownikaZPliku = 0;
     int iloscZnajomych = 0;
     fstream plik;
-    Osoba pusty;
 
     adresaci.clear();
-    plik.open("KsiazkaAdresowa.txt",ios::in); // aby otworzyc plik do odczytu
-    if (plik.good() == true) {
-
-        while (getline(plik,linia)) {
-            adresaci.push_back(pusty);
-            iloscZnajomych++;
+    plik.open("KsiazkaAdresowa.txt",ios::in);
+    if (plik.good() == true)
+    {
+        while (getline(plik,linia))
+        {
             ileZnakowWyjac = 0;
             poczatek = 0;
             iloscPionowychKresek = 0;
 
-            for (int i = 0; i < linia.size(); i++) {
+            for (int i = 0; i < linia.size(); i++)
+            {
                 ileZnakowWyjac = i - poczatek;
-                if (linia[i] == '|') {
+                if (linia[i] == '|')
+                {
                     iloscPionowychKresek++;
-                    wyraz = linia.substr (poczatek,ileZnakowWyjac);
-                    switch (iloscPionowychKresek) {
-                    case 1:
-                        adresaci[iloscZnajomych - 1].id = atoi(wyraz.c_str());
-                        break;
-                    case 2:
-                        adresaci[iloscZnajomych-1].AktualnieZalogowaneId = atoi(wyraz.c_str());
-                        break;
-                    case 3:
-                        adresaci[iloscZnajomych - 1].imie = wyraz;
-                        break;
-                    case 4:
-                        adresaci[iloscZnajomych - 1].nazwisko = wyraz;
-                        break;
-                    case 5:
-                        adresaci[iloscZnajomych - 1].numerTelefonu = wyraz;
-                        break;
-                    case 6:
-                        adresaci[iloscZnajomych - 1].email = wyraz;
-                        break;
-                    case 7:
-                        adresaci[iloscZnajomych - 1].adres = wyraz;
+                    wyraz = linia.substr (poczatek, ileZnakowWyjac);
+                    idUzytkownikaZPliku = atoi(wyraz.c_str());
+                    if ( iloscPionowychKresek == 2 && idZalogowanegoUzytkownika == idUzytkownikaZPliku)
+                    {
+                        iloscZnajomych++;
+                        zapiszZnajomychUzytkownikaDoWektora(adresaci, linia, iloscZnajomych);
                         break;
                     }
                     poczatek = poczatek + ileZnakowWyjac + 1;
                 }
-                //znajomi[iloscZnajomych - 1].numerID = iloscZnajomych;
             }
         }
         plik.close();
     }
 }
 
-void WczytajTylkoKontaktyDanegoUzytkownika(vector<Osoba> &adresaci, int zalogowaneId) {
-
-    vector<Uzytkownik> BazaDanych;
-    string liniaZDanymiZnajomego = "";
-
-    cout << "Zalogowane ID to: " << zalogowaneId << endl;
-
-    fstream plik;
-    plik.open("KontaktyTymczasowe.txt", ios::out );
-    if(plik.good() == true) {
-        for (vector <Osoba>::iterator itr=adresaci.begin(); itr != adresaci.end(); itr++) {
-            if(itr->AktualnieZalogowaneId == zalogowaneId) {
-                liniaZDanymiZnajomego += ZamianaIntNaString(itr -> id) + '|';
-                liniaZDanymiZnajomego +=ZamianaIntNaString(itr->AktualnieZalogowaneId) + '|';
-                liniaZDanymiZnajomego += itr -> imie + '|';
-                liniaZDanymiZnajomego += itr -> nazwisko + '|';
-                liniaZDanymiZnajomego += itr -> numerTelefonu + '|';
-                liniaZDanymiZnajomego += itr -> email + '|';
-                liniaZDanymiZnajomego += itr -> adres + '|';
-
-                plik << liniaZDanymiZnajomego << endl;
-                liniaZDanymiZnajomego = "";
-            }
-        }
-        plik.close();
-        cout << "Dane zostaly zapisne." << endl;
-        system("pause");
-    } else {
-        cout << "Nie udalo sie utworzyc pliku " << endl;
-    }
-
-
-
-}
 
 void WyszukajPoNazwisku(vector<Osoba> &adresaci) {
 
@@ -385,6 +388,7 @@ void WyswietlWszystkieOsoby(vector<Osoba> &adresaci) {
 
     for(vector<Osoba>::iterator itr=adresaci.begin(); itr!=adresaci.end(); itr++) {
         cout << itr->id << endl;
+        cout << itr->AktualnieZalogowaneId << endl;
         cout << itr->imie << endl;
         cout << itr->nazwisko << endl;
         cout << itr->numerTelefonu << endl;
@@ -546,7 +550,7 @@ void MenuGlowne(int AktualnieZalogowaneId) {
     cout << "5. Usun adresata" << endl;
     cout << "6. Edytuj adresata" << endl;
     cout << "9. Zakoncz program" << endl;
-    wczytajZnajomychZPliku(adresaci);
+    wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
     wybor = wczytajZnak();
 
     if (wybor == '1') {
@@ -556,7 +560,7 @@ void MenuGlowne(int AktualnieZalogowaneId) {
     } else if (wybor == '3') {
         WyszukajPoNazwisku(adresaci);
     } else if (wybor == '4') {
-        WczytajTylkoKontaktyDanegoUzytkownika(adresaci,AktualnieZalogowaneId);
+       WyswietlWszystkieOsoby(adresaci);
     } else if (wybor == '5') {
         UsunUzytkownika(adresaci);
         ZapisZmianyWKsiazceAdresowej(adresaci);
@@ -573,11 +577,11 @@ void MenuGlowne(int AktualnieZalogowaneId) {
 int main() {
     vector<Osoba> adresaci;
     vector<Uzytkownik> BazaDanych;
-    int iloscOsob =0;
+
     char wybor;
     int AktualnieZalogowaneId = 0;
 
-    wczytajZnajomychZPliku(adresaci);
+    wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
     WczytajBazeUzytkownikow(BazaDanych);
 
 
