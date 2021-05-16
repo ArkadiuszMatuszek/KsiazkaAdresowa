@@ -687,7 +687,7 @@ int main() {
 
         cout << "1. Logowanie " << endl;
         cout << "2. Rejestracja " << endl;
-        cout << "3. Wyswietl uzytkownik " << endl;
+       // cout << "3. Wyswietl uzytkownik " << endl;
         cout << "4. Wyjdz z programu " << endl;
 
 
@@ -747,7 +747,7 @@ int main() {
         } else if (wybor == '2') {
             zapisNowegoUzytkownika(BazaDanych);
         } else if (wybor == '3') {
-            WyswietlWszystkichUzytkownik(BazaDanych);
+          //  WyswietlWszystkichUzytkownik(BazaDanych);
         } else if (wybor == '4') {
             exit(0);
         }
