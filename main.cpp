@@ -174,6 +174,28 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
 
 }
 
+void zmianaHasloUzytkownika(vector<Uzytkownik> &BazaDanych, int AktualneId){
+
+    string NoweHaslo;
+
+cout << "Jestes w panelu zmiany haslo uzytkownika " << endl;
+cout << "Podaj aktualne haslo " << endl;
+
+
+for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
+        if(AktualneId == itr->IdZalogowanegoUzytkownika){
+        cin >> NoweHaslo;
+        itr->haslo = NoweHaslo;
+        break;
+        }
+    }
+
+
+
+
+
+}
+
 void WyswietlWszystkichUzytkownik(vector<Uzytkownik> &BazaDanych) {
 
     for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++) {
@@ -611,6 +633,25 @@ void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci, int AktualnieZalogowa
     }
 }
 
+void ZapiszZmianeHaslaWBazieDanych(vector<Uzytkownik> &BazaDanych){
+fstream plik;
+string liniaZDanymiUzytkownika = "";
+
+plik.open("BazaUzytkownikow.txt", ios::out);
+if(plik.good() == true){
+            for(vector<Uzytkownik>::iterator itr=BazaDanych.begin(); itr!=BazaDanych.end(); itr++){
+
+            liniaZDanymiUzytkownika += ZamianaIntNaString(itr->IdZalogowanegoUzytkownika) + '|';
+            liniaZDanymiUzytkownika += itr->login + '|';
+            liniaZDanymiUzytkownika += itr->haslo + '|';
+
+            plik << liniaZDanymiUzytkownika << endl;
+            liniaZDanymiUzytkownika = "";
+    }
+}
+plik.close();
+}
+
 void MenuGlowne(int AktualnieZalogowaneId) {
 
     vector<Uzytkownik> BazaDanych;
@@ -628,7 +669,8 @@ wczytajZanjomychZgodniezZalogowanymId(adresaci,AktualnieZalogowaneId);
         cout << "4. Wyswietl wszystkie osoby" << endl;
         cout << "5. Usun adresata" << endl;
         cout << "6. Edytuj adresata" << endl;
-        cout << "7. Wyloguj " << endl;
+        cout << "7. Zmien haslo " << endl;
+        cout << "8. Wyloguj sie " << endl;
         cout << "9. Zakoncz program" << endl;
 
         wybor = wczytajZnak();
@@ -649,6 +691,11 @@ wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
             EdytujIstniejacyKontakt(adresaci);
             ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
         } else if(wybor == '7') {
+            WczytajBazeUzytkownikow(BazaDanych);
+            zmianaHasloUzytkownika(BazaDanych,AktualnieZalogowaneId);
+            ZapiszZmianeHaslaWBazieDanych(BazaDanych);
+
+        } else if(wybor == '8') {
 
         } else if (wybor == '9') {
             exit(0);
