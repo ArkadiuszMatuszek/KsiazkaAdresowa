@@ -7,8 +7,8 @@
 using namespace std;
 
 struct Osoba {
-    int id =0;
-    int AktualnieZalogowaneId = 0;
+    int id;
+    int AktualnieZalogowaneId;
     string imie, nazwisko, numerTelefonu, email, adres;
 };
 
@@ -135,8 +135,6 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
     bool ZnalezionyUzytkownik = 0;
 
 
-    WczytajBazeUzytkownikow(BazaDanych);
-    cout << BazaDanych.size() << endl;
 
 
     cout << "Podaj login uzytkownika " << endl;
@@ -218,6 +216,7 @@ void zapiszNowegoZnajomego(vector <Osoba> &adresaci, int ZalogowaneId) {
 
     kontakt.AktualnieZalogowaneId = ZalogowaneId;
 
+
     cout << kontakt.AktualnieZalogowaneId << endl;
     system("pause");
     adresaci.push_back(kontakt);
@@ -243,7 +242,7 @@ void zapiszNowegoZnajomego(vector <Osoba> &adresaci, int ZalogowaneId) {
         system("pause");
     } else {
         cout << "Nie udalo sie otworzyc pliku i zapisac do niego danych." << endl;
-        system("pause");
+    system("pause");
     }
 }
 
@@ -297,6 +296,69 @@ void zapiszZnajomychUzytkownikaDoWektora (vector <Osoba> &adresaci, string linia
     }
 }
 
+
+ /* void UsuwanieWybrnajeLiniiZPliku(int AktualnieZalogowaneId){
+vector<string> liniaDoUsuniecia;
+string linia;
+string wyraz;
+int iloscPionowychKresek = 0;
+int ileZnajokWyjac = 0;
+int poczatek = 0;
+int idUzytkownikaZPliku = 0;
+bool znalezionaLinia;
+
+fstream staryPlik, NowyPlik;
+liniaDoUsuniecia.clear();
+staryPlik.open("KsiazkaAdresowa.txt", ios::in);
+if(staryPlik.good() == true){
+    while(getline(staryPlik,linia)){
+        ileZnajokWyjac = 0;
+        poczatek = 0;
+        iloscPionowychKresek = 0;
+
+        for(int i=0; i<linia.size(); i++){
+            ileZnajokWyjac = i - poczatek;
+            if(linia[i] == '|'){
+                iloscPionowychKresek++;
+                wyraz = linia.substr(poczatek,ileZnajokWyjac);
+                idUzytkownikaZPliku = atoi(wyraz.c_str());
+                if(iloscPionowychKresek == 2 && AktualnieZalogowaneId == idUzytkownikaZPliku){
+                    liniaDoUsuniecia.push_back(linia);
+                    break;
+                }
+                poczatek = poczatek + ileZnajokWyjac +1;
+            }
+
+        }
+
+    }
+    staryPlik.close();
+
+}
+
+    NowyPlik.open("KontaktyTymczasowe.txt");
+    staryPlik.open("KsiazkaAdresowa.txt", ios::in);
+
+    while(getline(staryPlik, linia)){
+        znalezionaLinia = 0;
+        for(int i=0; i<liniaDoUsuniecia.size(); i++){
+            if(linia == liniaDoUsuniecia[i]){
+                znalezionaLinia = 1;
+
+            }
+        }
+        if(znalezionaLinia == 0){
+            NowyPlik << linia << endl;
+        }
+
+    }
+    NowyPlik.close();
+    staryPlik.close();
+
+   // remove("KsiazkaAdresowa.txt");
+    //rename("KontaktyTymczasowe.txt", "KsiazkaAdresowa.txt");
+
+} */
 
 void wczytajZnajomychZPliku(vector <Osoba> &adresaci, int idZalogowanegoUzytkownika)
 {
@@ -507,11 +569,13 @@ void EdytujIstniejacyKontakt(vector<Osoba> &adresaci) {
 
 
 
-void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci) {
+/* void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci, int AktualnieZalogowaneID) {
 
     fstream plik;
     plik.open("KsiazkaAdresowa.txt", ios::out);
     string liniaZDanymiZnajomego = "";
+
+    UsuwanieWybrnajeLiniiZPliku(AktualnieZalogowaneID);
 
     if (plik.good() == true) {
         for (vector <Osoba>::iterator itr = adresaci.begin(); itr != adresaci.end(); itr++) {
@@ -531,17 +595,18 @@ void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci) {
         system("pause");
     }
 
-}
+} */
 
 void MenuGlowne(int AktualnieZalogowaneId) {
 
     vector<Uzytkownik> BazaDanych;
     vector<Osoba> adresaci;
     char wybor;
-    cout << "aktualnie zalogowane id to: " << AktualnieZalogowaneId << endl;
-    system("pause");
+
+  wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
 
 
+  while(true){
     system("cls");
     cout << "1. Dodaj osobe" << endl;
     cout << "2. Wyszukaj po imieniu" << endl;
@@ -550,7 +615,7 @@ void MenuGlowne(int AktualnieZalogowaneId) {
     cout << "5. Usun adresata" << endl;
     cout << "6. Edytuj adresata" << endl;
     cout << "9. Zakoncz program" << endl;
-    wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
+
     wybor = wczytajZnak();
 
     if (wybor == '1') {
@@ -563,14 +628,15 @@ void MenuGlowne(int AktualnieZalogowaneId) {
        WyswietlWszystkieOsoby(adresaci);
     } else if (wybor == '5') {
         UsunUzytkownika(adresaci);
-        ZapisZmianyWKsiazceAdresowej(adresaci);
+        //ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
     } else if (wybor == '6') {
         EdytujIstniejacyKontakt(adresaci);
-        ZapisZmianyWKsiazceAdresowej(adresaci);
+       // ZapisZmianyWKsiazceAdresowej(adresaci,AktualnieZalogowaneId);
     } else if (wybor == '9') {
         exit(0);
     }
 
+}
 }
 
 
@@ -581,7 +647,7 @@ int main() {
     char wybor;
     int AktualnieZalogowaneId = 0;
 
-    wczytajZnajomychZPliku(adresaci,AktualnieZalogowaneId);
+
     WczytajBazeUzytkownikow(BazaDanych);
 
 
@@ -599,7 +665,6 @@ int main() {
 
         if (wybor == '1') {
             AktualnieZalogowaneId = LogowanieUzytkownika(BazaDanych);
-            cout << AktualnieZalogowaneId << endl;
             MenuGlowne(AktualnieZalogowaneId);
 
         } else if (wybor == '2') {
