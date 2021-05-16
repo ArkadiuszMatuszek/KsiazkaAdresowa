@@ -152,9 +152,10 @@ int LogowanieUzytkownika(vector<Uzytkownik> &BazaDanych) {
                 cout << itr->login << endl;
                 cout << itr->haslo << endl;
                 cout << itr->IdZalogowanegoUzytkownika << endl;
+                idZalogowanegoUzytkownika = itr->IdZalogowanegoUzytkownika;
                 break;
             }else{
-            cout << "Nie prawid³owe haslo " << endl;
+            cout << "Nie prawidÅ‚owe haslo " << endl;
             cout << "Trwa zamykanie programu " << endl;
             Sleep(500);
             exit(0);
@@ -193,6 +194,8 @@ void zapiszNowegoZnajomego(vector <Osoba> &adresaci, int ZalogowaneId) {
     string imie, nazwisko, adres, numerTelefonu, email;
     string liniaZDanymiZnajomego = "";
     Osoba kontakt;
+
+    cout << "zalogowaneId to: " << ZalogowaneId << endl;
 
     cout << endl << "Zapisywanie nowego znajomego." << endl << endl;
     cout << "Podaj imie: ";
@@ -526,12 +529,13 @@ void ZapisZmianyWKsiazceAdresowej(vector<Osoba> &adresaci) {
 
 }
 
-void MenuGlowne() {
+void MenuGlowne(int AktualnieZalogowaneId) {
 
-    int AktualnieZalogowaneId = 0;
     vector<Uzytkownik> BazaDanych;
     vector<Osoba> adresaci;
     char wybor;
+    cout << "aktualnie zalogowane id to: " << AktualnieZalogowaneId << endl;
+    system("pause");
 
 
     system("cls");
@@ -586,11 +590,13 @@ int main() {
         cout << "3. Wyswietl uzytkownik " << endl;
         cout << "4. Wyjdz z programu " << endl;
 
+
         wybor = wczytajZnak();
 
         if (wybor == '1') {
             AktualnieZalogowaneId = LogowanieUzytkownika(BazaDanych);
-            MenuGlowne();
+            cout << AktualnieZalogowaneId << endl;
+            MenuGlowne(AktualnieZalogowaneId);
 
         } else if (wybor == '2') {
             zapisNowegoUzytkownika(BazaDanych);
